@@ -1,14 +1,340 @@
-        <main class="grid" id="catalog-grid">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudy Customs - Product Catalog</title>
+    <style>
+        :root {
+            --bg-color: #f1f3f5;
+            --card-bg: #ffffff;
+            --text-color: #1a1d20;
+            --text-muted: #5a626a;
+            --accent-dark: #111111;
+            --border-color: #e9ecef;
+            --whatsapp-color: #25D366;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--accent-dark);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            margin: 0;
+        }
+
+        .controls-wrapper {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 30px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar:focus {
+            border-color: var(--accent-dark);
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tag {
+            background: #e9ecef;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .tag.active, .tag:hover {
+            background: var(--accent-dark);
+            color: #ffffff;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+            transition: transform 0.25s cubic-bezier(0.1, 0.8, 0.2, 1), box-shadow 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+        }
+
+        .card-carousel {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            background: #f8f9fa;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .carousel-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-track img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.85);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .carousel-btn:hover { background: #ffffff; }
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+
+        .card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--accent-dark);
+            height: 4.2em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 0 20px 0;
+            flex-grow: 1;
+            height: 3em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .price {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent-dark);
+        }
+
+        .btn {
+            background-color: var(--accent-dark);
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .btn:hover { opacity: 0.85; }
+
+        .contact-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            background: var(--accent-dark);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .contact-btn.alt { background: var(--whatsapp-color); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-weight: bold;
+        }
+
+        .modal h2 { margin-top: 0; font-size: 1.5rem; }
+        .modal-options { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .opt-btn { padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; color: white; text-align: center; }
+        .opt-email { background: var(--accent-dark); }
+        .opt-wa { background: var(--whatsapp-color); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Cloudy Customs</h1>
+            <p>Direct Inventory Catalog — Search items and connect directly to order.</p>
+        </header>
+
+        <section class="controls-wrapper">
+            <input type="text" id="search" class="search-bar" placeholder="🔍 Search product names..." onkeyup="filterProducts()">
+            <div class="filter-tags">
+                <button class="tag active" onclick="filterCategory('all', this)">All Items</button>
+                <button class="tag" onclick="filterCategory('flags', this)">Flags & Blankets</button>
+                <button class="tag" onclick="filterCategory('smoking', this)">Smoking Accessories</button>
+                <button class="tag" onclick="filterCategory('utilities', this)">Home & Travel Utilities</button>
+            </div>
+        </section>
+
+                <main class="grid" id="catalog-grid">
             
-            <!-- Item 1: Giant Irish Flag -->
+            <!-- Item 1 -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
-                        <img src="s-l1600%20(38).webp" alt="Giant Irish Flag - Angle 1">
-                        <!-- Add more image tags here for extra product photos -->
+                        <img src="s-l1600%20(38).webp" alt="Giant Irish Flag">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Giant Irish Flag Ireland Republic Eire St Patrick Day Support</h2>
@@ -20,14 +346,14 @@
                 </div>
             </div>
 
-            <!-- Item 2: Ulster Flag Variant -->
+            <!-- Item 2 -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(19).webp" alt="Ulster Flag Variant">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Ulster / Union Jack / England Flag With Eyelets 5x3 FT</h2>
@@ -39,14 +365,14 @@
                 </div>
             </div>
 
-            <!-- Item 3: Mushroom Style Gift Set -->
+            <!-- Item 3 -->
             <div class="card" data-category="smoking">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(37).webp" alt="Mushroom Style Gift Set">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Mushroom Style Gift Set Tray Grinder Tin Conical Roller</h2>
@@ -58,15 +384,15 @@
                 </div>
             </div>
 
-            <!-- Item 4: Bros 420 Smoking Tray Set -->
+            <!-- Item 4 -->
             <div class="card" data-category="smoking">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l300.webp" alt="Bros 420 Rolling Smoking Tray Set">
-                        <img src="s-l1600%20(33).webp" alt="Bros 420 Set Alternative View">
+                        <img src="s-l1600%20(33).webp" alt="Alternative View">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Bros 420 Rolling Smoking Tray Set Tin Papers Grinder</h2>
@@ -78,15 +404,15 @@
                 </div>
             </div>
 
-            <!-- Item 5: Qoolish Organiser -->
+            <!-- Item 5 -->
             <div class="card" data-category="utilities">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(35).webp" alt="Qoolish Underwear Drawer Organiser">
-                        <img src="s-l1600%20(34).webp" alt="Qoolish Organiser Dimensions">
+                        <img src="s-l1600%20(34).webp" alt="Dimensions">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Qoolish Underwear Drawer Organiser Grey - Pack of 4</h2>
@@ -98,14 +424,14 @@
                 </div>
             </div>
 
-            <!-- Item 6: Union Jack Blanket Flag Throw -->
+            <!-- Item 6 -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(14).webp" alt="Union Jack Blanket Flag Throw">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Union Jack Blanket Flag Throw Kids Adults Celebration Gift</h2>
@@ -117,14 +443,14 @@
                 </div>
             </div>
 
-            <!-- Item 7: Red Hand Of Ulster Blanket Throw -->
+            <!-- Item 7 -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(6).webp" alt="Red Hand Of Ulster Blanket Throw">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Red Hand Of Ulster Blanket Throw Kids Adults Grandparent Gift Parade Celebration</h2>
@@ -136,16 +462,16 @@
                 </div>
             </div>
 
-            <!-- Item 8: Small Pocket Scales -->
+            <!-- Item 8 -->
             <div class="card" data-category="utilities">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(15).webp" alt="Small Pocket Scales">
-                        <img src="s-l1600%20(17).webp" alt="Scales Interface Options">
-                        <img src="s-l1600%20(18).webp" alt="Scales Packaging">
+                        <img src="s-l1600%20(17).webp" alt="Interface">
+                        <img src="s-l1600%20(18).webp" alt="Packaging">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Small Pocket Scales Jewellery Weighing Set 500g 0.01g Personal Kitchen Crafting</h2>
@@ -157,14 +483,14 @@
                 </div>
             </div>
 
-                        <!-- Item 9: Union Jack Rayon Flag Stick -->
+                        <!-- Item 9 -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(13).webp" alt="Union Jack Rayon Flag Stick">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Union Jack Rayon Flag With Stick Large - Handheld Decor Party Jubilee Waving</h2>
@@ -176,14 +502,14 @@
                 </div>
             </div>
 
-            <!-- Item 10: Rumi Wig -->
+            <!-- Item 10 -->
             <div class="card" data-category="utilities">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(23).webp" alt="Rumi K Pop Style Wig">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Rumi K Pop Stlye Wig Pony Tail Hair Piece Halloween Party Dress Up Costume UK</h2>
@@ -195,16 +521,16 @@
                 </div>
             </div>
 
-            <!-- Item 11: Delivery Robot -->
+            <!-- Item 11 -->
             <div class="card" data-category="utilities">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(39).webp" alt="Electric Food Delivery Robot Side 1">
-                        <img src="s-l1600%20(21).webp" alt="Electric Food Delivery Robot Side 2">
-                        <img src="s-l1600%20(22).webp" alt="Electric Food Delivery Robot Packaging">
+                        <img src="s-l1600%20(21).webp" alt="Side 2">
+                        <img src="s-l1600%20(22).webp" alt="Box">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Remote controlled Electric Food Delivery Robot Small Item Transportation RC UK</h2>
@@ -216,20 +542,20 @@
                 </div>
             </div>
 
-            <!-- Item 12: Girls Urinal Multi-Angle -->
+            <!-- Item 12 -->
             <div class="card" data-category="utilities">
                 <div class="card-carousel">
                     <div class="carousel-track">
-                        <img src="s-l1600%20(28).webp" alt="Girls Portable Pee Bottle Pink Variant">
-                        <img src="s-l1600%20(29).webp" alt="Girls Portable Pee Bottle Mint Green Variant">
-                        <img src="s-l1600%20(27).webp" alt="Girls Portable Pee Bottle Alternative Package">
+                        <img src="s-l1600%20(28).webp" alt="Pink Variant">
+                        <img src="s-l1600%20(29).webp" alt="Mint Variant">
+                        <img src="s-l1600%20(27).webp" alt="Box Profile">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Urinal Girls Potty Training Pee Bottle Kids Pink Portable Car Portable Travel UK</h2>
-                    <p class="card-desc">Sealed ergonomic portable solution bottle for emergency automotive travel intervals. Swipe for color options.</p>
+                    <p class="card-desc">Sealed ergonomic portable solution bottle for emergency automotive travel intervals. Swipe for options.</p>
                     <div class="card-footer">
                         <span class="price">£6.99</span>
                         <button class="btn" onclick="openOrderModal('Girls Portable Pee Bottle', '6.99')">Order Now</button>
@@ -237,14 +563,14 @@
                 </div>
             </div>
 
-            <!-- Item 13: Boys Urinal -->
+            <!-- Item 13 -->
             <div class="card" data-category="utilities">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(30).webp" alt="Boys Urinal Training Bottle">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Boys Potty Training Pee Bottle /Portable Urinal for Toddlers Brand New UK Travel</h2>
@@ -256,15 +582,15 @@
                 </div>
             </div>
 
-            <!-- Item 14: Cone Holder Tubes -->
+            <!-- Item 14 -->
             <div class="card" data-category="smoking">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(10).webp" alt="King Size Cone Holder Tube Display">
-                        <img src="s-l1600%20(11).webp" alt="Cone Holder Tubes Stacked">
+                        <img src="s-l1600%20(11).webp" alt="Stacked">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">King Size 120mm Cone Holder Tube Airtight Pop-Top Smoking Storage 1 4 5 10 12 UK</h2>
@@ -276,14 +602,14 @@
                 </div>
             </div>
 
-            <!-- Item 15: Pink Bros 420 Set -->
+            <!-- Item 15 -->
             <div class="card" data-category="smoking">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(24).webp" alt="Bros 420 Stash Tray Gift Set">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Bros 420 Smoking Rolling Stash Tray Gift Set Papers Tips Cone Holder Stash Tube</h2>
@@ -295,14 +621,14 @@
                 </div>
             </div>
 
-            <!-- Item 16: 4-Pack Hand Flags -->
+            <!-- Item 16 -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(8).webp" alt="4 Pack Hand Flags">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Pack of 4 Union Jack Hand Flags 12x8" with Sticks Pole Royal Decoration Party UK</h2>
@@ -314,14 +640,14 @@
                 </div>
             </div>
 
-                                    <!-- Item 17: Rhinestone Bracelet -->
+                        <!-- Item 17 -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
                         <img src="s-l1600%20(31).webp" alt="Patriotic Rhinestone Bracelet">
                     </div>
-                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
-                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">❮</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">❯</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">7" Patriotic Red, White, Blue Rhinestone Beaded Stretch Bracelet</h2>
@@ -343,14 +669,12 @@
                 <a href="https://wa.me" target="_blank" class="contact-btn alt">💬 WhatsApp Store</a>
             </div>
         </section>
-        
-        <!-- 🛠️ VISUAL IMAGE ALIGNMENT UTILITY (TEMPORARY) -->
+
+        <!-- Image Alignment Panel Dropdowns -->
         <section id="dev-toolkit" style="background:#fff; border:3px dashed #dc3545; padding:30px; margin-top:60px; border-radius:16px;">
             <h2 style="color:#dc3545; margin-top:0;">🔧 Image Alignment Tool</h2>
             <p>If any item shows the wrong picture, select the correct webp file number below to update your screen instantly. When satisfied, copy the clean updated layout code below.</p>
-            
             <div id="tool-controls" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:15px; margin-bottom:20px;"></div>
-            
             <button onclick="exportPerfectHTML()" style="background:#dc3545; color:#fff; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">Generate and Copy Perfect HTML Code</button>
             <textarea id="html-export-box" style="width:100%; height:150px; margin-top:15px; font-family:monospace; display:none;" readonly onclick="this.select()"></textarea>
         </section>
@@ -426,7 +750,6 @@
         const sellerWhatsApp = "441234567890"; 
         let activeCategory = "all";
 
-        // Lists out all your webp files from your file manager
         const myWebpFiles = [
             "s-l300.webp", "s-l1600 (4).webp", "s-l1600 (5).webp", "s-l1600 (6).webp", 
             "s-l1600 (7).webp", "s-l1600 (8).webp", "s-l1600 (9).webp", "s-l1600 (10).webp", 
@@ -438,7 +761,6 @@
             "s-l1600 (37).webp", "s-l1600 (38).webp", "s-l1600 (39).webp", "s-l1600 (40).webp"
         ];
 
-        // Automates drop-down building panels matching cards live inside browser viewport
         window.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.card');
             const panel = document.getElementById('tool-controls');
@@ -448,7 +770,10 @@
                 if(!titleElement) return;
                 
                 const titleText = titleElement.innerText.substring(0, 22) + "...";
-                const currentImgSrc = decodeURIComponent(card.querySelector('.carousel-track img').getAttribute('src'));
+                const firstImg = card.querySelector('.carousel-track img');
+                if (!firstImg) return;
+                
+                const currentImgSrc = decodeURIComponent(firstImg.getAttribute('src'));
                 
                 let selectHTML = `<div style="margin-bottom:10px;"><label style="display:block; font-size:0.85rem; font-weight:bold;">${idx+1}. ${titleText}</label><select onchange="updateCardPhoto(${idx}, this.value)" style="width:100%; padding:6px; border-radius:4px;">`;
                 
@@ -465,18 +790,13 @@
         function updateCardPhoto(cardIndex, chosenFile) {
             const cards = document.querySelectorAll('.card');
             const targetTrack = cards[cardIndex].querySelector('.carousel-track');
-            
-            // Clean out current elements and force web safe encoding formats straight onto screen view
-            targetTrack.innerHTML = `<img src="${encodeURIComponent(chosenFile)}" alt="Updated photo alignment view">`;
-            
-            // Reset active index offsets safely back to baseline
+            targetTrack.innerHTML = `<img src="${encodeURIComponent(chosenFile)}" alt="Updated item view">`;
             const carousel = targetTrack.parentElement;
             carousel.setAttribute('data-index', '0');
             targetTrack.style.transform = `translateX(0%)`;
         }
 
         function exportPerfectHTML() {
-            // Clean out tool interfaces out from code string block generation pipeline 
             document.getElementById('dev-toolkit').style.display = 'none';
             const entireHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
             document.getElementById('dev-toolkit').style.display = 'block';
@@ -486,9 +806,8 @@
             outputBox.style.display = 'block';
             outputBox.select();
             
-            // Copy instantly to clipboard memory
             navigator.clipboard.writeText(entireHTML);
-            alert("Perfect HTML code has been copied to your clipboard! Paste this directly over your index.html file on GitHub to save your corrections permanently.");
+            alert("Updated operational HTML script successfully loaded to memory! Paste directly over your file inside GitHub code view to finish calibration adjustments.");
         }
 
         function moveCarousel(button, direction) {
@@ -512,13 +831,12 @@
             document.getElementById('modalDetails').innerText = `Price: £${itemPrice} — Select your communication path below to request direct billing options.`;
             
             const encodedName = encodeURIComponent(itemName);
-                            const rawMessage = `Hello Cloudy Customs! I would like to order: ${itemName} (£${itemPrice}). Please let me know your stock status and payment options.`;
+            const rawMessage = `Hello Cloudy Customs! I would like to order: ${itemName} (£${itemPrice}). Please let me know your stock status and payment options.`;
             const encodedMessage = encodeURIComponent(rawMessage);
 
             document.getElementById('emailOrderLink').href = `mailto:${sellerEmail}?subject=Order Request: ${encodedName}&body=${encodedMessage}`;
             document.getElementById('waOrderLink').href = `https://wa.me{sellerWhatsApp}?text=${encodedMessage}`;
-
-            modal.style.display = 'flex';
+                            modal.style.display = 'flex';
         }
 
         function closeOrderModal() {
@@ -565,4 +883,5 @@
     </script>
 </body>
 </html>
+
 
