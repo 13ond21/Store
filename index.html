@@ -314,7 +314,7 @@
                 </div>
             </div>
 
-                        <!-- Item 17: Rhinestone Bracelet -->
+                                    <!-- Item 17: Rhinestone Bracelet -->
             <div class="card" data-category="flags">
                 <div class="card-carousel">
                     <div class="carousel-track">
@@ -343,9 +343,19 @@
                 <a href="https://wa.me" target="_blank" class="contact-btn alt">💬 WhatsApp Store</a>
             </div>
         </section>
+        
+        <!-- 🛠️ VISUAL IMAGE ALIGNMENT UTILITY (TEMPORARY) -->
+        <section id="dev-toolkit" style="background:#fff; border:3px dashed #dc3545; padding:30px; margin-top:60px; border-radius:16px;">
+            <h2 style="color:#dc3545; margin-top:0;">🔧 Image Alignment Tool</h2>
+            <p>If any item shows the wrong picture, select the correct webp file number below to update your screen instantly. When satisfied, copy the clean updated layout code below.</p>
+            
+            <div id="tool-controls" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:15px; margin-bottom:20px;"></div>
+            
+            <button onclick="exportPerfectHTML()" style="background:#dc3545; color:#fff; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem;">Generate and Copy Perfect HTML Code</button>
+            <textarea id="html-export-box" style="width:100%; height:150px; margin-top:15px; font-family:monospace; display:none;" readonly onclick="this.select()"></textarea>
+        </section>
     </div>
 
-    <!-- Order Selection Popup Overlay Window -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeOrderModal()">×</button>
@@ -406,7 +416,6 @@
         .carousel-btn.prev { left: 10px; }
         .carousel-btn.next { right: 10px; }
         
-        /* Auto-hide carousel controls if the track houses a single image file */
         .carousel-track:not(:has(img:nth-child(2))) ~ .carousel-btn {
             display: none;
         }
@@ -417,13 +426,76 @@
         const sellerWhatsApp = "441234567890"; 
         let activeCategory = "all";
 
-        // Logic functionality controlling item image navigation transitions
+        // Lists out all your webp files from your file manager
+        const myWebpFiles = [
+            "s-l300.webp", "s-l1600 (4).webp", "s-l1600 (5).webp", "s-l1600 (6).webp", 
+            "s-l1600 (7).webp", "s-l1600 (8).webp", "s-l1600 (9).webp", "s-l1600 (10).webp", 
+            "s-l1600 (11).webp", "s-l1600 (12).webp", "s-l1600 (13).webp", "s-l1600 (14).webp", 
+            "s-l1600 (15).webp", "s-l1600 (16).webp", "s-l1600 (17).webp", "s-l1600 (18).webp", 
+            "s-l1600 (19).webp", "s-l1600 (20).webp", "s-l1600 (23).webp", "s-l1600 (24).webp", 
+            "s-l1600 (27).webp", "s-l1600 (28).webp", "s-l1600 (29).webp", "s-l1600 (30).webp", 
+            "s-l1600 (31).webp", "s-l1600 (33).webp", "s-l1600 (34).webp", "s-l1600 (35).webp", 
+            "s-l1600 (37).webp", "s-l1600 (38).webp", "s-l1600 (39).webp", "s-l1600 (40).webp"
+        ];
+
+        // Automates drop-down building panels matching cards live inside browser viewport
+        window.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            const panel = document.getElementById('tool-controls');
+            
+            cards.forEach((card, idx) => {
+                const titleElement = card.querySelector('.card-title');
+                if(!titleElement) return;
+                
+                const titleText = titleElement.innerText.substring(0, 22) + "...";
+                const currentImgSrc = decodeURIComponent(card.querySelector('.carousel-track img').getAttribute('src'));
+                
+                let selectHTML = `<div style="margin-bottom:10px;"><label style="display:block; font-size:0.85rem; font-weight:bold;">${idx+1}. ${titleText}</label><select onchange="updateCardPhoto(${idx}, this.value)" style="width:100%; padding:6px; border-radius:4px;">`;
+                
+                myWebpFiles.forEach(file => {
+                    const isSelected = currentImgSrc === file ? 'selected' : '';
+                    selectHTML += `<option value="${file}" ${isSelected}>${file}</option>`;
+                });
+                
+                selectHTML += `</select></div>`;
+                panel.innerHTML += selectHTML;
+            });
+        });
+
+        function updateCardPhoto(cardIndex, chosenFile) {
+            const cards = document.querySelectorAll('.card');
+            const targetTrack = cards[cardIndex].querySelector('.carousel-track');
+            
+            // Clean out current elements and force web safe encoding formats straight onto screen view
+            targetTrack.innerHTML = `<img src="${encodeURIComponent(chosenFile)}" alt="Updated photo alignment view">`;
+            
+            // Reset active index offsets safely back to baseline
+            const carousel = targetTrack.parentElement;
+            carousel.setAttribute('data-index', '0');
+            targetTrack.style.transform = `translateX(0%)`;
+        }
+
+        function exportPerfectHTML() {
+            // Clean out tool interfaces out from code string block generation pipeline 
+            document.getElementById('dev-toolkit').style.display = 'none';
+            const entireHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+            document.getElementById('dev-toolkit').style.display = 'block';
+            
+            const outputBox = document.getElementById('html-export-box');
+            outputBox.value = entireHTML;
+            outputBox.style.display = 'block';
+            outputBox.select();
+            
+            // Copy instantly to clipboard memory
+            navigator.clipboard.writeText(entireHTML);
+            alert("Perfect HTML code has been copied to your clipboard! Paste this directly over your index.html file on GitHub to save your corrections permanently.");
+        }
+
         function moveCarousel(button, direction) {
             const carousel = button.parentElement;
             const track = carousel.querySelector('.carousel-track');
             const images = track.querySelectorAll('img');
             const totalImages = images.length;
-            
             let currentIndex = parseInt(carousel.getAttribute('data-index') || '0');
             
             currentIndex += direction;
@@ -440,7 +512,7 @@
             document.getElementById('modalDetails').innerText = `Price: £${itemPrice} — Select your communication path below to request direct billing options.`;
             
             const encodedName = encodeURIComponent(itemName);
-            const rawMessage = `Hello Cloudy Customs! I would like to order: ${itemName} (£${itemPrice}). Please let me know your stock status and payment options.`;
+                            const rawMessage = `Hello Cloudy Customs! I would like to order: ${itemName} (£${itemPrice}). Please let me know your stock status and payment options.`;
             const encodedMessage = encodeURIComponent(rawMessage);
 
             document.getElementById('emailOrderLink').href = `mailto:${sellerEmail}?subject=Order Request: ${encodedName}&body=${encodedMessage}`;
@@ -493,3 +565,4 @@
     </script>
 </body>
 </html>
+
