@@ -1,332 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudy Customs - Product Catalog</title>
-    <style>
-        :root {
-            --bg-color: #f1f3f5;
-            --card-bg: #ffffff;
-            --text-color: #1a1d20;
-            --text-muted: #5a626a;
-            --accent-dark: #111111;
-            --border-color: #e9ecef;
-            --whatsapp-color: #25D366;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.5;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        header h1 {
-            font-size: 2.8rem;
-            margin: 0 0 10px 0;
-            font-weight: 800;
-            letter-spacing: -1px;
-            color: var(--accent-dark);
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.15rem;
-            margin: 0;
-        }
-
-        /* Search & Filtering Utilities */
-        .controls-wrapper {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 14px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .search-bar {
-            width: 100%;
-            max-width: 500px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            border: 1px solid #ced4da;
-            border-radius: 30px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-bar:focus {
-            border-color: var(--accent-dark);
-        }
-
-        .filter-tags {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .tag {
-            background: #e9ecef;
-            color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .tag.active, .tag:hover {
-            background: var(--accent-dark);
-            color: #ffffff;
-        }
-
-        /* Product Showcase Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
-            transition: transform 0.25s cubic-bezier(0.1, 0.8, 0.2, 1), box-shadow 0.25s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
-        }
-
-        .card-img-wrapper {
-            width: 100%;
-            height: 260px;
-            background: #f8f9fa;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .card-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            margin: 0 0 10px 0;
-            font-weight: 700;
-            line-height: 1.4;
-            color: var(--accent-dark);
-            height: 4.2em;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
-
-        .card-desc {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin: 0 0 20px 0;
-            flex-grow: 1;
-            height: 3em;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .price {
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: var(--accent-dark);
-        }
-
-        .btn {
-            background-color: var(--accent-dark);
-            color: white;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: opacity 0.15s;
-        }
-
-        .btn:hover {
-            opacity: 0.85;
-        }
-
-        /* Footer Info Portal */
-        .contact-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            max-width: 650px;
-            margin: 0 auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
-        }
-
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
-
-        .contact-btn {
-            background: var(--accent-dark);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: background-color 0.2s;
-        }
-
-        .contact-btn.alt {
-            background: var(--whatsapp-color);
-        }
-
-        /* Modal Overlay Window */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 450px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-weight: bold;
-        }
-
-        .modal h2 {
-            margin-top: 0;
-            font-size: 1.5rem;
-        }
-
-        .modal-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .opt-btn {
-            padding: 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            color: white;
-            text-align: center;
-        }
-        .opt-email { background: var(--accent-dark); }
-        .opt-wa { background: var(--whatsapp-color); }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <header>
-            <h1>Cloudy Customs</h1>
-            <p>Direct Inventory Catalog — Search items and connect directly to order.</p>
-        </header>
-
-        <!-- Utility Filtering Section -->
-        <section class="controls-wrapper">
-            <input type="text" id="search" class="search-bar" placeholder="🔍 Search product names..." onkeyup="filterProducts()">
-            <div class="filter-tags">
-                <button class="tag active" onclick="filterCategory('all', this)">All Items</button>
-                <button class="tag" onclick="filterCategory('flags', this)">Flags & Blankets</button>
-                <button class="tag" onclick="filterCategory('smoking', this)">Smoking Accessories</button>
-                <button class="tag" onclick="filterCategory('utilities', this)">Home & Travel Utilities</button>
-            </div>
-        </section>
-
-                <main class="grid" id="catalog-grid">
+        <main class="grid" id="catalog-grid">
             
-            <!-- Item 1 -->
+            <!-- Item 1: Giant Irish Flag -->
             <div class="card" data-category="flags">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (38).webp" alt="Giant Irish Flag">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(38).webp" alt="Giant Irish Flag - Angle 1">
+                        <!-- Add more image tags here for extra product photos -->
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Giant Irish Flag Ireland Republic Eire St Patrick Day Support</h2>
@@ -338,10 +20,14 @@
                 </div>
             </div>
 
-            <!-- Item 2 -->
+            <!-- Item 2: Ulster Flag Variant -->
             <div class="card" data-category="flags">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (19).webp" alt="Ulster Flag Variant">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(19).webp" alt="Ulster Flag Variant">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Ulster / Union Jack / England Flag With Eyelets 5x3 FT</h2>
@@ -353,10 +39,14 @@
                 </div>
             </div>
 
-            <!-- Item 3 -->
+            <!-- Item 3: Mushroom Style Gift Set -->
             <div class="card" data-category="smoking">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (37).webp" alt="Mushroom Style Gift Set">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(37).webp" alt="Mushroom Style Gift Set">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Mushroom Style Gift Set Tray Grinder Tin Conical Roller</h2>
@@ -368,10 +58,15 @@
                 </div>
             </div>
 
-            <!-- Item 4 -->
+            <!-- Item 4: Bros 420 Smoking Tray Set -->
             <div class="card" data-category="smoking">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (33).webp" alt="Bros 420 Rolling Smoking Tray Set">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l300.webp" alt="Bros 420 Rolling Smoking Tray Set">
+                        <img src="s-l1600%20(33).webp" alt="Bros 420 Set Alternative View">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Bros 420 Rolling Smoking Tray Set Tin Papers Grinder</h2>
@@ -383,10 +78,15 @@
                 </div>
             </div>
 
-            <!-- Item 5 -->
+            <!-- Item 5: Qoolish Organiser -->
             <div class="card" data-category="utilities">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (35).webp" alt="Qoolish Underwear Drawer Organiser">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(35).webp" alt="Qoolish Underwear Drawer Organiser">
+                        <img src="s-l1600%20(34).webp" alt="Qoolish Organiser Dimensions">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Qoolish Underwear Drawer Organiser Grey - Pack of 4</h2>
@@ -398,10 +98,14 @@
                 </div>
             </div>
 
-            <!-- Item 6 -->
+            <!-- Item 6: Union Jack Blanket Flag Throw -->
             <div class="card" data-category="flags">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (14).webp" alt="Union Jack Blanket Flag Throw">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(14).webp" alt="Union Jack Blanket Flag Throw">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Union Jack Blanket Flag Throw Kids Adults Celebration Gift</h2>
@@ -413,14 +117,18 @@
                 </div>
             </div>
 
-            <!-- Item 7 -->
+            <!-- Item 7: Red Hand Of Ulster Blanket Throw -->
             <div class="card" data-category="flags">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (6).webp" alt="Red Hand Of Ulster Blanket Throw">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(6).webp" alt="Red Hand Of Ulster Blanket Throw">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Red Hand Of Ulster Blanket Throw Parade Celebration Mat</h2>
-                    <p class="card-desc">Highly vibrant plush fleece throw blanket perfect for display hangings and coverings.</p>
+                    <h2 class="card-title">Red Hand Of Ulster Blanket Throw Kids Adults Grandparent Gift Parade Celebration</h2>
+                    <p class="card-desc">Highly vibrant plush fleece Ulster's Third Force throw blanket perfect for display hangings.</p>
                     <div class="card-footer">
                         <span class="price">£14.99</span>
                         <button class="btn" onclick="openOrderModal('Red Hand Of Ulster Blanket Throw', '14.99')">Order Now</button>
@@ -428,13 +136,19 @@
                 </div>
             </div>
 
-            <!-- Item 8 -->
+            <!-- Item 8: Small Pocket Scales -->
             <div class="card" data-category="utilities">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (15).webp" alt="Small Pocket Scales">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(15).webp" alt="Small Pocket Scales">
+                        <img src="s-l1600%20(17).webp" alt="Scales Interface Options">
+                        <img src="s-l1600%20(18).webp" alt="Scales Packaging">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Small Pocket Scales Jewellery Weighing Set 500g 0.01g</h2>
+                    <h2 class="card-title">Small Pocket Scales Jewellery Weighing Set 500g 0.01g Personal Kitchen Crafting</h2>
                     <p class="card-desc">Ultra fine sensor accuracy weighing scale with protective flip-down shell casing.</p>
                     <div class="card-footer">
                         <span class="price">£7.49</span>
@@ -443,13 +157,17 @@
                 </div>
             </div>
 
-            <!-- Item 9 -->
+                        <!-- Item 9: Union Jack Rayon Flag Stick -->
             <div class="card" data-category="flags">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (13).webp" alt="Union Jack Rayon Flag Stick">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(13).webp" alt="Union Jack Rayon Flag Stick">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Union Jack Rayon Flag With Stick Large Handheld Decor</h2>
+                    <h2 class="card-title">Union Jack Rayon Flag With Stick Large - Handheld Decor Party Jubilee Waving</h2>
                     <p class="card-desc">Premium fabric texturing handheld stick waving decoration item.</p>
                     <div class="card-footer">
                         <span class="price">£2.49</span>
@@ -458,13 +176,17 @@
                 </div>
             </div>
 
-            <!-- Item 10 -->
+            <!-- Item 10: Rumi Wig -->
             <div class="card" data-category="utilities">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (23).webp" alt="Rumi K Pop Style Wig">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(23).webp" alt="Rumi K Pop Style Wig">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Rumi K Pop Style Wig Pony Tail Hair Piece Costume UK</h2>
+                    <h2 class="card-title">Rumi K Pop Stlye Wig Pony Tail Hair Piece Halloween Party Dress Up Costume UK</h2>
                     <p class="card-desc">Luminous costume transformations hairpiece attachment designed for cosplay.</p>
                     <div class="card-footer">
                         <span class="price">£7.99</span>
@@ -473,31 +195,41 @@
                 </div>
             </div>
 
-                        <!-- Item 11 -->
+            <!-- Item 11: Delivery Robot -->
             <div class="card" data-category="utilities">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600%20(39).webp" alt="Electric Food Delivery Robot">
-
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(39).webp" alt="Electric Food Delivery Robot Side 1">
+                        <img src="s-l1600%20(21).webp" alt="Electric Food Delivery Robot Side 2">
+                        <img src="s-l1600%20(22).webp" alt="Electric Food Delivery Robot Packaging">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
                     <h2 class="card-title">Remote controlled Electric Food Delivery Robot Small Item Transportation RC UK</h2>
                     <p class="card-desc">Micro vehicular remote controller track rover for item shifting play configurations.</p>
                     <div class="card-footer">
                         <span class="price">£24.99</span>
-                        <button class="btn" onclick="openOrderModal('Remote Controlled Electric Food Delivery Robot RC', '24.99')">Order Now</button>
+                        <button class="btn" onclick="openOrderModal('Electric Food Delivery Robot RC', '24.99')">Order Now</button>
                     </div>
                 </div>
             </div>
 
-
-                        <!-- Item 12 -->
+            <!-- Item 12: Girls Urinal Multi-Angle -->
             <div class="card" data-category="utilities">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600%20(28).webp" alt="Girls Portable Pee Bottle">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(28).webp" alt="Girls Portable Pee Bottle Pink Variant">
+                        <img src="s-l1600%20(29).webp" alt="Girls Portable Pee Bottle Mint Green Variant">
+                        <img src="s-l1600%20(27).webp" alt="Girls Portable Pee Bottle Alternative Package">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Urinal Girls Potty Training Pee Bottle Kids Pink Portable</h2>
-                    <p class="card-desc">Sealed ergonomic portable solution bottle for emergency automotive travel intervals.</p>
+                    <h2 class="card-title">Urinal Girls Potty Training Pee Bottle Kids Pink Portable Car Portable Travel UK</h2>
+                    <p class="card-desc">Sealed ergonomic portable solution bottle for emergency automotive travel intervals. Swipe for color options.</p>
                     <div class="card-footer">
                         <span class="price">£6.99</span>
                         <button class="btn" onclick="openOrderModal('Girls Portable Pee Bottle', '6.99')">Order Now</button>
@@ -505,15 +237,17 @@
                 </div>
             </div>
 
-
-
-                                    <!-- Item 13 -->
+            <!-- Item 13: Boys Urinal -->
             <div class="card" data-category="utilities">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (30).webp" alt="Boys Urinal Training Bottle">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(30).webp" alt="Boys Urinal Training Bottle">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Boys Potty Training Pee Bottle Portable Urinal for Toddlers</h2>
+                    <h2 class="card-title">Boys Potty Training Pee Bottle /Portable Urinal for Toddlers Brand New UK Travel</h2>
                     <p class="card-desc">Anti-spill internal funnels portable potty tracking flask device for field travel.</p>
                     <div class="card-footer">
                         <span class="price">£6.99</span>
@@ -522,13 +256,18 @@
                 </div>
             </div>
 
-            <!-- Item 14 -->
+            <!-- Item 14: Cone Holder Tubes -->
             <div class="card" data-category="smoking">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (10).webp" alt="King Size Cone Holder Tube">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(10).webp" alt="King Size Cone Holder Tube Display">
+                        <img src="s-l1600%20(11).webp" alt="Cone Holder Tubes Stacked">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">King Size 120mm Cone Holder Tube Airtight Pop-Top Storage</h2>
+                    <h2 class="card-title">King Size 120mm Cone Holder Tube Airtight Pop-Top Smoking Storage 1 4 5 10 12 UK</h2>
                     <p class="card-desc">Smell proof locking moisture protective containers to isolate items safely during transit.</p>
                     <div class="card-footer">
                         <span class="price">£1.95</span>
@@ -537,14 +276,18 @@
                 </div>
             </div>
 
-            <!-- Item 15 -->
+            <!-- Item 15: Pink Bros 420 Set -->
             <div class="card" data-category="smoking">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (24).webp" alt="Bros 420 Stash Tray Gift Set">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(24).webp" alt="Bros 420 Stash Tray Gift Set">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Bros 420 Smoking Rolling Stash Tray Gift Set Papers Tips</h2>
-                    <p class="card-desc">The ultimate storage kit including paper elements and structural storage tubes.</p>
+                    <h2 class="card-title">Bros 420 Smoking Rolling Stash Tray Gift Set Papers Tips Cone Holder Stash Tube</h2>
+                    <p class="card-desc">The ultimate pink cartoon storage kit including paper elements and structural storage tubes.</p>
                     <div class="card-footer">
                         <span class="price">£14.99</span>
                         <button class="btn" onclick="openOrderModal('Bros 420 Rolling Stash Tray Gift Set', '14.99')">Order Now</button>
@@ -552,13 +295,17 @@
                 </div>
             </div>
 
-            <!-- Item 16 -->
+            <!-- Item 16: 4-Pack Hand Flags -->
             <div class="card" data-category="flags">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (8).webp" alt="4 Pack Hand Flags">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(8).webp" alt="4 Pack Hand Flags">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Pack of 4 Union Jack Hand Flags 12x8" with Sticks Pole</h2>
+                    <h2 class="card-title">Pack of 4 Union Jack Hand Flags 12x8" with Sticks Pole Royal Decoration Party UK</h2>
                     <p class="card-desc">Group decoration accessory items suitable for sports matches or historical celebrations.</p>
                     <div class="card-footer">
                         <span class="price">£2.49</span>
@@ -567,17 +314,21 @@
                 </div>
             </div>
 
-            <!-- Item 17 -->
-            <div class="card" data-category="smoking">
-                <div class="card-img-wrapper">
-                    <img class="card-img" src="s-l1600 (9).webp" alt="Pre Roll Holder Tube">
+                        <!-- Item 17: Rhinestone Bracelet -->
+            <div class="card" data-category="flags">
+                <div class="card-carousel">
+                    <div class="carousel-track">
+                        <img src="s-l1600%20(31).webp" alt="Patriotic Rhinestone Bracelet">
+                    </div>
+                    <button class="carousel-btn prev" onclick="moveCarousel(this, -1)">&#10094;</button>
+                    <button class="carousel-btn next" onclick="moveCarousel(this, 1)">&#10095;</button>
                 </div>
                 <div class="card-content">
-                    <h2 class="card-title">Pre Roll Holder Storage Tube Travel Amsterdam Herb Cone Stash</h2>
-                    <p class="card-desc">Rugged protective capsule tubes designed to secure custom products on-the-go.</p>
+                    <h2 class="card-title">7" Patriotic Red, White, Blue Rhinestone Beaded Stretch Bracelet</h2>
+                    <p class="card-desc">Elegant elasticated fashion decoration accessory item celebrating classic styling details.</p>
                     <div class="card-footer">
-                        <span class="price">£4.49</span>
-                        <button class="btn" onclick="openOrderModal('Pre Roll Holder Storage Tube', '4.49')">Order Now</button>
+                        <span class="price">£6.99</span>
+                        <button class="btn" onclick="openOrderModal('Patriotic Rhinestone Beaded Bracelet', '6.99')">Order Now</button>
                     </div>
                 </div>
             </div>
@@ -594,6 +345,7 @@
         </section>
     </div>
 
+    <!-- Order Selection Popup Overlay Window -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeOrderModal()">×</button>
@@ -606,10 +358,81 @@
         </div>
     </div>
 
+    <style>
+        .card-carousel {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            background: #f8f9fa;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .carousel-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-track img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.85);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .carousel-btn:hover { background: #ffffff; }
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+        
+        /* Auto-hide carousel controls if the track houses a single image file */
+        .carousel-track:not(:has(img:nth-child(2))) ~ .carousel-btn {
+            display: none;
+        }
+    </style>
+
     <script>
         const sellerEmail = "cloudycustoms@domain.com"; 
         const sellerWhatsApp = "441234567890"; 
         let activeCategory = "all";
+
+        // Logic functionality controlling item image navigation transitions
+        function moveCarousel(button, direction) {
+            const carousel = button.parentElement;
+            const track = carousel.querySelector('.carousel-track');
+            const images = track.querySelectorAll('img');
+            const totalImages = images.length;
+            
+            let currentIndex = parseInt(carousel.getAttribute('data-index') || '0');
+            
+            currentIndex += direction;
+            if (currentIndex >= totalImages) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = totalImages - 1;
+            
+            carousel.setAttribute('data-index', currentIndex);
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
 
         function openOrderModal(itemName, itemPrice) {
             const modal = document.getElementById('checkoutModal');
